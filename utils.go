@@ -9,6 +9,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"math/big"
 	"net"
 	"net/http"
@@ -373,4 +374,26 @@ func randString(l int) (string, error) {
 	enc.Encode(d, b)
 	d = d[:l]
 	return string(d), nil
+}
+
+func requestOTP() (otp string) {
+	fmt.Printf("OTP:")
+	fmt.Scan(&otp)
+	return otp
+}
+
+func isMfaEnabled(mfaEnabled string) bool {
+  switch strings.ToLower(mfaEnabled) {
+  	case "1", "y", "yes", "true":
+			return true
+  	default: // "0", "n", "no", "false"
+  		return false
+  }
+}
+
+func oneTimePassword(mfaEnabled string) (otp string) {
+	if isMfaEnabled(mfaEnabled) {
+		otp = requestOTP()
+	}
+	return otp
 }

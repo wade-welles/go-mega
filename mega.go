@@ -510,7 +510,7 @@ func (m *Mega) prelogin(email string) error {
 }
 
 // Authenticate and start a session
-func (m *Mega) login(email string, passwd string) error {
+func (m *Mega) login(email string, passwd string, mfa string) error {
 	var msg [1]LoginMsg
 	var res [1]LoginResp
 	var err error
@@ -531,6 +531,8 @@ func (m *Mega) login(email string, passwd string) error {
 
 	msg[0].Cmd = "us"
 	msg[0].User = email
+  msg[0].Mfa = mfa
+
 	if m.accountVersion == 1 {
 		msg[0].Handle = uhandle
 	} else {
@@ -579,13 +581,13 @@ func (m *Mega) login(email string, passwd string) error {
 }
 
 // Authenticate and start a session
-func (m *Mega) Login(email string, passwd string) error {
+func (m *Mega) Login(email string, passwd string, otp string) error {
 	err := m.prelogin(email)
 	if err != nil {
 		return err
 	}
 
-	err = m.login(email, passwd)
+	err = m.login(email, passwd, otp)
 	if err != nil {
 		return err
 	}

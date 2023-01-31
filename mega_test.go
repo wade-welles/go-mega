@@ -14,6 +14,7 @@ import (
 
 var USER string = os.Getenv("MEGA_USER")
 var PASSWORD string = os.Getenv("MEGA_PASSWD")
+var MFA_OTP string = os.Getenv("MEGA_MFA_OTP")
 
 // retry runs fn until it succeeds, using what to log and retrying on
 // EAGAIN.  It uses exponential backoff
@@ -47,7 +48,7 @@ func initSession(t *testing.T) *Mega {
 	m := New()
 	// m.SetDebugger(log.Printf)
 	retry(t, "Login", func() error {
-		return m.Login(USER, PASSWORD)
+		return m.Login(USER, PASSWORD, MFA_OTP)
 	})
 	return m
 }
@@ -125,7 +126,7 @@ func TestLogin(t *testing.T) {
 
 	m := New()
 	retry(t, "Login", func() error {
-		return m.Login(USER, PASSWORD)
+		return m.Login(USER, PASSWORD, MFA_OTP)
 	})
 }
 
@@ -247,7 +248,7 @@ func TestConfig(t *testing.T) {
 
 	m := New()
 	m.SetAPIUrl("http://invalid.domain")
-	err := m.Login(USER, PASSWORD)
+	err := m.Login(USER, PASSWORD, MFA_OTP)
 	if err == nil {
 		t.Error("API Url: Expected failure")
 	}
